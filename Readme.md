@@ -1,6 +1,6 @@
 # Thelia Redirect Url
 
-Add a short description here. You can also add a screenshot if needed.
+The goal of this module is to redirect 404 urls with 301 or 302 redirections.
 
 ## Installation
 
@@ -14,42 +14,11 @@ Add a short description here. You can also add a screenshot if needed.
 Add it in your main thelia composer.json file
 
 ```
-composer require your-vendor/thelia-redirect-url-module:~1.0
+composer require thelia/thelia-redirect-url-module:~0.1.0
 ```
 
 ## Usage
 
-Explain here how to use your module, how to configure it, etc.
-
-## Hook
-
-If your module use one or more hook, fill this part. Explain which hooks are used.
-
-
-## Loop
-
-If your module declare one or more loop, describe them here like this :
-
-[loop name]
-
-### Input arguments
-
-|Argument |Description |
-|---      |--- |
-|**arg1** | describe arg1 with an exemple. |
-|**arg2** | describe arg2 with an exemple. |
-
-### Output arguments
-
-|Variable   |Description |
-|---        |--- |
-|$VAR1    | describe $VAR1 variable |
-|$VAR2    | describe $VAR2 variable |
-
-### Exemple
-
-Add a complete exemple of your loop
-
-## Other ?
-
-If you have other think to put, feel free to complete your readme as you want.
+The configuration is very simple :
+* You can add redirections one by one in the module configuration
+* You can import a file with all your redirections in Tools, Import, Redirected urls.
