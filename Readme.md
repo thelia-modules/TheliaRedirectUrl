@@ -22,3 +22,13 @@ composer require thelia/thelia-redirect-url-module:~0.1.0
 The configuration is very simple :
 * You can add redirections one by one in the module configuration
 * You can import a file with all your redirections in Tools, Import, Redirected urls.
+
+## Others
+
+Be sure that you use the following format for your urls :
+'path' + 'parameters'
+
+*for example :*
++ *'/'*
++ *'/contact.html'*
++ *'/contact.html?user_id=12&message=hello'*

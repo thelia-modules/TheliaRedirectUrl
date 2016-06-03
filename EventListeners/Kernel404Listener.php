@@ -1,10 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: tompradat
- * Date: 20/04/2016
- * Time: 16:07
- */
+/*************************************************************************************/
+/*      This file is part of the TheliaRedirectUrl package.                          */
+/*                                                                                   */
+/*      Copyright (c) OpenStudio                                                     */
+/*      email : dev@thelia.net                                                       */
+/*      web : http://www.thelia.net                                                  */
+/*                                                                                   */
+/*      For the full copyright and license information, please view the LICENSE.txt  */
+/*      file that was distributed with this source code.                             */
+/*************************************************************************************/
 
 namespace TheliaRedirectUrl\EventListeners;
 

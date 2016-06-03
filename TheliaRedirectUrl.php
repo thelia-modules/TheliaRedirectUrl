@@ -1,6 +1,6 @@
 <?php
 /*************************************************************************************/
-/*      This file is part of the Thelia package.                                     */
+/*      This file is part of the TheliaRedirectUrl package.                          */
 /*                                                                                   */
 /*      Copyright (c) OpenStudio                                                     */
 /*      email : dev@thelia.net                                                       */
@@ -34,17 +34,19 @@ class TheliaRedirectUrl extends BaseModule
         return true;
     }
 
+    public static function isValidUrl($url)
+    {
+        // the url need to start with '/'
+        return preg_match('*^/*', $url);
+    }
+
     public static function formatUrl($url)
     {
-        if (!preg_match('/\//', $url)) {
-            if (empty(parse_url($url, PHP_URL_SCHEME))) {
-                $url = 'http://' . $url;
-            }
-        }
+        //we want the path with parameter (for example : remove 'http://www.test.fr' in 'http://www.test.fr/shop/product?product_id=12&test=2')
+        $url = preg_replace('/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})/', '', $url);
 
-        $path = parse_url($url, PHP_URL_PATH);
-        $path = str_replace('/index_dev.php', '', $path);
-
-        return $path;
+        //remove index and index_dev.php
+        $url = preg_replace('/\/index(_dev)?\.php/', '', $url);
+        return $url;
     }
 }
