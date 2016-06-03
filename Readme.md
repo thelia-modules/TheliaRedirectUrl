@@ -14,7 +14,7 @@ The goal of this module is to redirect 404 urls with 301 or 302 redirections.
 Add it in your main thelia composer.json file
 
 ```
-composer require thelia/thelia-redirect-url-module:~0.1.0
+composer require thelia/thelia-redirect-url-module:~0.2.0
 ```
 
 ## Usage
