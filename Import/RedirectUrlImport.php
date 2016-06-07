@@ -27,7 +27,9 @@ class RedirectUrlImport extends AbstractImport
     public function importData(array $data)
     {
         $tempRedirect = '';
-        $url = $data['url'];
+
+        // there should not be any / at the end of the url (else the listener won't resolve the url)
+        $url = preg_replace('*\/$*', '', $data['url']);
         $redirect = $data['redirect'];
 
         if (isset($data['temp_redirect'])) {
@@ -37,9 +39,9 @@ class RedirectUrlImport extends AbstractImport
         // check if columns have a valid url format
         if (!TheliaRedirectUrl::isValidUrl($url)) {
             $errorUrl = $url;
-        }elseif (!TheliaRedirectUrl::isValidUrl($redirect)) {
+        } elseif (!TheliaRedirectUrl::isValidUrl($redirect)) {
             $errorUrl = $redirect;
-        }elseif($tempRedirect !='' && !TheliaRedirectUrl::isValidUrl($tempRedirect)) {
+        } elseif ($tempRedirect !='' && !TheliaRedirectUrl::isValidUrl($tempRedirect)) {
             $errorUrl = $tempRedirect;
         }
 

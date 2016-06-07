@@ -36,8 +36,12 @@ class TheliaRedirectUrl extends BaseModule
 
     public static function isValidUrl($url)
     {
-        // the url need to start with '/'
-        return preg_match('*^/*', $url);
+        // the url '/' is valid, else the url must start with '/' and not end with '/'
+        if ($url != '/') {
+            return preg_match('/(^\/)(.)+([^\/]$)/', $url);
+        }
+
+        return true;
     }
 
     public static function formatUrl($url)
