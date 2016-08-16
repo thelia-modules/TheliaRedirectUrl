@@ -1,6 +1,6 @@
 # Thelia Redirect Url
 
-The goal of this module is to redirect 404 urls with 301 or 302 redirections.
+The goal of this module is to redirect 404 urls with 302 or 301 redirections (temporary or permanent).
 
 ## Installation
 
@@ -14,7 +14,7 @@ The goal of this module is to redirect 404 urls with 301 or 302 redirections.
 Add it in your main thelia composer.json file
 
 ```
-composer require thelia/thelia-redirect-url-module:~0.2.0
+composer require thelia/thelia-redirect-url-module:~0.3.0
 ```
 
 ## Usage
@@ -32,3 +32,7 @@ Be sure that you use the following format for your urls :
 + *'/'*
 + *'/contact.html'*
 + *'/contact.html?user_id=12&message=hello'*
+
+The module will catch 404 response from Thelia and check if the request uri has a matching url in the redirect_url table.
+If not, it will then check with the pathInfo. If it finds a match, it will redirect to the temporary redirect if it is provided
+, else if will redirect to the redirect column (which is mandatory).

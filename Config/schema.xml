@@ -8,5 +8,8 @@
         <column name="temp_redirect" size="255" type="VARCHAR"/>
         <column name="redirect" size="255" type="VARCHAR" required="true"/>
         <behavior name="timestampable" />
+        <index name="idx_url">
+            <index-column name="url" />
+        </index>
     </table>
 </database>

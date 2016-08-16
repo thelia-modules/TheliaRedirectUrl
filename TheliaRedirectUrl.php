@@ -13,6 +13,7 @@
 namespace TheliaRedirectUrl;
 
 use Propel\Runtime\Connection\ConnectionInterface;
+use Symfony\Component\Finder\Finder;
 use Thelia\Install\Database;
 use Thelia\Module\BaseModule;
 use TheliaRedirectUrl\Model\Base\RedirectUrlQuery;
@@ -32,6 +33,30 @@ class TheliaRedirectUrl extends BaseModule
         }
 
         return true;
+    }
+
+    public function update($currentVersion, $newVersion, ConnectionInterface $con = null)
+    {
+        $finder = (new Finder())
+            ->files()
+            ->name('#.*?\.sql#')
+            ->sortByName()
+            ->in(__DIR__ . DS . 'Config' . DS . 'update')
+        ;
+
+        $database = new Database($con);
+
+        /** @var \Symfony\Component\Finder\SplFileInfo $updateSQLFile */
+        foreach ($finder as $updateSQLFile) {
+            if (version_compare($currentVersion, str_replace('.sql', '', $updateSQLFile->getFilename()), '<')) {
+                $database->insertSql(
+                    null,
+                    [
+                        $updateSQLFile->getPathname()
+                    ]
+                );
+            }
+        }
     }
 
     public static function isValidUrl($url)
