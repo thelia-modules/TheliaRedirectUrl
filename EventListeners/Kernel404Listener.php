@@ -19,6 +19,7 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Thelia\Core\HttpFoundation\Request;
 use Thelia\Tools\URL;
+use TheliaRedirectUrl\Model\RedirectUrl;
 use TheliaRedirectUrl\Model\RedirectUrlQuery;
 use TheliaRedirectUrl\TheliaRedirectUrl;
 
@@ -36,16 +37,16 @@ class Kernel404Listener implements EventSubscriberInterface
     {
         if ($event->getResponse()->getStatusCode() === 404) {
 
-            $path = TheliaRedirectUrl::formatUrl($this->request->getUri());
+            // We first check if the RequestUri match and if not we check with the pathInfo
+            $path = $this->request->getRequestUri();
+            $pathInfo = $this->request->getPathInfo();
 
             $query = RedirectUrlQuery::create()->findOneByUrl($path);
 
             if (null !== $query && $path !== $query->getRedirect()) {
-                if (null !== $query->getTempRedirect() && '' !== $query->getTempRedirect()) {
-                    $event->setResponse(new RedirectResponse(URL::getInstance()->absoluteUrl($query->getTempRedirect()), 302));
-                } else {
-                    $event->setResponse(new RedirectResponse(URL::getInstance()->absoluteUrl($query->getRedirect()), 301));
-                }
+                $this->resolveRedirect($event, $query);
+            } elseif ((null !== $query = RedirectUrlQuery::create()->findOneByUrl($pathInfo)) && $pathInfo !== $query->getRedirect()) {
+                $this->resolveRedirect($event, $query);
             }
         }
     }
@@ -55,5 +56,18 @@ class Kernel404Listener implements EventSubscriberInterface
         return [
             KernelEvents::RESPONSE => ['kernel404Resolver', 256]
         ];
+    }
+
+    /**
+     * @param FilterResponseEvent $event
+     * @param $query
+     */
+    protected function resolveRedirect(FilterResponseEvent $event, RedirectUrl $query)
+    {
+        if (null !== $query->getTempRedirect() && '' !== $query->getTempRedirect()) {
+            $event->setResponse(new RedirectResponse(URL::getInstance()->absoluteUrl($query->getTempRedirect()), 302));
+        } else {
+            $event->setResponse(new RedirectResponse(URL::getInstance()->absoluteUrl($query->getRedirect()), 301));
+        }
     }
 }
