@@ -17,7 +17,8 @@ CREATE TABLE `redirect_url`
     `redirect` VARCHAR(255) NOT NULL,
     `created_at` DATETIME,
     `updated_at` DATETIME,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    INDEX `idx_url` (`url`)
 ) ENGINE=InnoDB;
 
 # This restores the fkey checks, after having unset them earlier
