@@ -27,9 +27,10 @@ class TheliaRedirectUrl extends BaseModule
     {
         try {
             RedirectUrlQuery::create()->findOne();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             $database = new Database($con);
-            $database->insertSql(null, array(__DIR__ . '/Config/thelia.sql'));
+            $database->insertSql(null, [__DIR__ . '/Config/thelia.sql']);
         }
 
         return true;
@@ -43,7 +44,6 @@ class TheliaRedirectUrl extends BaseModule
             ->sortByName()
             ->in(__DIR__ . DS . 'Config' . DS . 'update')
         ;
-
         $database = new Database($con);
 
         /** @var \Symfony\Component\Finder\SplFileInfo $updateSQLFile */

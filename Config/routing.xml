@@ -4,7 +4,13 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="my_route_id" path="/admin/module/TheliaRedirectUrl/create">
+    <route id="theliaredirecturl.create" path="/admin/module/TheliaRedirectUrl/create">
         <default key="_controller">TheliaRedirectUrl\Controller\Configuration::createAction</default>
+    </route>
+    <route id="theliaredirecturl.delete" path="/admin/module/TheliaRedirectUrl/delete">
+        <default key="_controller">TheliaRedirectUrl\Controller\Configuration::deleteAction</default>
+    </route>
+    <route id="theliaredirecturl.update" path="/admin/module/TheliaRedirectUrl/update">
+        <default key="_controller">TheliaRedirectUrl\Controller\Configuration::updateAction</default>
     </route>
 </routes>
