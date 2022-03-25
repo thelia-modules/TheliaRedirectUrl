@@ -1,70 +1,187 @@
-<div class="row">
-    <div class="col-md-12">
-        <div class="general-block-decorator">
-            <div class="alert alert-info">
-                {intl l="The url format for this module is the path with the parameters and start with '/'. (ex: '/product?product_id=2&category_id=3' or '/product' or '/' )" d="theliaredirecturl.bo.default"}
-                <br />
-                {intl l="They shoud not start with 'http://' or 'www'." d="theliaredirecturl.bo.default"}
-            </div>
-            <p>
-                {intl l="To add a new redirection, use the following button (if you want to import a file of urls to redirect, go in tools, import section, category redirected urls)" d="theliaredirecturl.bo.default"}
-            </p>
-            <button class="btn btn-success" data-toggle="modal" data-target="#new-redirect-modal"><span class="glyphicon glyphicon-plus"></span> {intl l="New redirection" d="theliaredirecturl.bo.default"}</button>
-        </div>
+<div class="general-block-decorator">
+    <div class="alert alert-info">
+        {intl l="The url format for this module is the path with the parameters and start with '/'. (ex: '/product?product_id=2&category_id=3' or '/product' or '/' )" d="theliaredirecturl.bo.default"}
+        <br />
+        {intl l="They shoud not start with 'http://' or 'www'." d="theliaredirecturl.bo.default"}
+    </div>
+    <p>{intl l="To add a new redirection, use the following button (if you want to import a file of urls to redirect, go in tools, import section, category redirected urls)" d="theliaredirecturl.bo.default"}</p>
+    <button class="btn btn-success" data-target="#create_dialog" data-toggle="modal"><i aria-hidden="true" class="glyphicon glyphicon-plus"></i> {intl l="New redirection" d="theliaredirecturl.bo.default"}</button>
+</div>
+
+{ifloop rel="redirecturl"}
+<div class="general-block-decorator">
+    <div class="table-responsive">
+        <table class="table table-condensed table-striped">
+            <caption>{intl l="Redirected URLs list" d="theliaredirecturl.bo.default"}</caption>
+            <thead>
+                <tr><th>{intl l="ID" d="theliaredirecturl.bo.default"}</th>
+                    <th>{intl l="URL" d="theliaredirecturl.bo.default"}</th>
+                    <th>{intl l="Temp redirect" d="theliaredirecturl.bo.default"}</th>
+                    <th>{intl l="Redirect" d="theliaredirecturl.bo.default"}</th>
+                    <th>{intl l="Created at" d="theliaredirecturl.bo.default"}</th>
+                    <th>{intl l="Updated at" d="theliaredirecturl.bo.default"}</th>
+                    <th>{intl l="Actions" d="theliaredirecturl.bo.default"}</th>
+                </tr>
+            </thead>
+
+            <tfoot>
+                <tr><th>{intl l="ID" d="theliaredirecturl.bo.default"}</th>
+                    <th>{intl l="URL" d="theliaredirecturl.bo.default"}</th>
+                    <th>{intl l="Temp redirect" d="theliaredirecturl.bo.default"}</th>
+                    <th>{intl l="Redirect" d="theliaredirecturl.bo.default"}</th>
+                    <th>{intl l="Created at" d="theliaredirecturl.bo.default"}</th>
+                    <th>{intl l="Updated at" d="theliaredirecturl.bo.default"}</th>
+                    <th>{intl l="Actions" d="theliaredirecturl.bo.default"}</th>
+                </tr>
+            </tfoot>
+
+            <tbody id="redirecturl-list">
+                {loop name="redirecturl" type="redirecturl"}
+                <tr><td>{$ID}</td>
+                    <td>{$URL}</td>
+                    <td>{$TEMP_REDIRECT}</td>
+                    <td>{$REDIRECT}</td>
+                    <td>{format_date date=$CREATE_DATE}</td>
+                    <td>{format_date date=$UPDATE_DATE}</td>
+                    <td><div class="btn-group" role="group">
+                            {loop name="can-update" type="auth" role="ADMIN" module="TheliaRedirectUrl" access="UPDATE"}
+                            {include file='renderer/buttons.html' btn_group=false buttons=[
+                                [
+                                    'type' => 'edit',
+                                    'title' => {intl l='Edit this redirection'},
+                                    'href' => '#update_dialog',
+                                    'data' => [
+                                        'id' => $ID,
+                                        'toggle' => 'modal'
+                                    ]
+                                ]
+                            ]}
+                            {/loop}
+
+                            {loop name="can-delete" type="auth" role="ADMIN" module="TheliaRedirectUrl" access="DELETE"}
+                            {include file='renderer/buttons.html' btn_group=false buttons=[
+                                [
+                                    'type' => 'delete',
+                                    'title' => {intl l='Delete this redirection'},
+                                    'href' => '#delete_dialog',
+                                    'data' => [
+                                        'id' => $ID,
+                                        'toggle' => 'modal'
+                                    ]
+                                ]
+                            ]}
+                            {/loop}
+                        </div>
+                    </td>
+                </tr>
+                {/loop}
+            </tbody>
+        </table>
     </div>
 </div>
-{form name="redirect.url.create"}
-    <form method="post" action="{url path="/admin/module/TheliaRedirectUrl/create"}">
-        {form_hidden_fields form=$form}
+{/ifloop}
 
-        {form_field form=$form field='success_url'}
-            <input type="hidden" name="{$name}" value="{url path='/admin/module/TheliaRedirectUrl'}" />
+{*<!-- Create confirmation dialog -->*}
+{capture "create_dialog"}
+    {form name="redirect.url.create"}
+        {form_hidden_fields}
+
+        {form_field field='success_url'}
+        <input type="hidden" name="{$name}" value="{url path='/admin/module/TheliaRedirectUrl'}" />
         {/form_field}
 
-        <div id="new-redirect-modal" class="modal fade in {if $form_error}modal-force-show{/if}" tabindex="-1" role="dialog" aria-labelledby="import-modal-label" aria-hidden="false">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button class="close" type="button" data-dismiss="modal">
-                            <span aria-hidden="true">×</span><span class="sr-only">Close</span>
-                        </button>
-                        <h4 class="modal-title">
-                            {intl l="New redirected url" d="theliaredirecturl.bo.default"}
-                        </h4>
-                    </div>
-                    <div class="modal-body">
-                        {if $form_error && $form_error_message}
-                            <div class="alert alert-danger">{$form_error_message}</div>
-                        {/if}
-                        {form_field field='url'}
-                            <div class="form-group {if $error}has-error{/if}">
-                                <label for="{$label_attr.for}">{$label}</label>
-                                <input type="text" id="{$label_attr.for}" class="form-control" name="{$name}" value="{$value}"/>
-                            </div>
-                        {/form_field}
-                        {form_field field='temp_redirect'}
-                            <div class="form-group {if $error}has-error{/if}">
-                                <label for="{$label_attr.for}">{$label}</label>
-                                <input type="text" id="{$label_attr.for}" class="form-control" name="{$name}" value="{$value}"/>
-                            </div>
-                        {/form_field}
-                        {form_field field='redirect'}
-                            <div class="form-group {if $error}has-error{/if}">
-                                <label for="{$label_attr.for}">{$label}</label>
-                                <input type="text" id="{$label_attr.for}" class="form-control" name="{$name}" value="{$value}"/>
-                            </div>
-                        {/form_field}
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-default" type="button" data-dismiss="modal">
-                            {intl l="Close" d="theliaredirecturl.bo.default"}
-                        </button>
-                        <button class="btn btn-primary" type="submit">
-                            {intl l="Save" d="theliaredirecturl.bo.defautl"}
-                        </button>
-                    </div>
-                </div>
-            </div>
+        {if $form_error && $form_error_message}
+        <div class="alert alert-danger">{$form_error_message}</div>
+        {/if}
+
+        {form_field field='url'}
+        <div class="form-group{if $error} has-error{/if}">
+            <label for="redirect-create-{$label_attr.for}">{$label}</label>
+            <input class="form-control" id="redirect-create-{$label_attr.for}" name="{$name}" type="text" value="{$value}" />
         </div>
-    </form>
-{/form}
+        {/form_field}
+
+        {form_field field='temp_redirect'}
+        <div class="form-group{if $error} has-error{/if}">
+            <label for="redirect-create-{$label_attr.for}">{$label}</label>
+            <input class="form-control" id="redirect-create-{$label_attr.for}" name="{$name}" type="text" value="{$value}"/>
+        </div>
+        {/form_field}
+
+        {form_field field='redirect'}
+        <div class="form-group{if $error} has-error{/if}">
+            <label for="redirect-create-{$label_attr.for}">{$label}</label>
+            <input class="form-control" id="redirect-create-{$label_attr.for}" name="{$name}" type="text" value="{$value}"/>
+        </div>
+        {/form_field}
+    {/form}
+{/capture}
+
+{include file = "includes/generic-confirm-dialog.html"
+
+         dialog_id       = "create_dialog"
+         dialog_title    = {intl l="Create redirection"}
+
+         form_action     = {url path='/admin/module/TheliaRedirectUrl/create'}
+         form_content    = {$smarty.capture.create_dialog nofilter}
+}
+
+{*<!-- Update confirmation dialog -->*}
+{capture "update_dialog"}
+    {form name="redirect.url.update"}
+        {form_hidden_fields}
+
+        {form_field field='success_url'}
+        <input type="hidden" name="{$name}" value="{url path='/admin/module/TheliaRedirectUrl'}" />
+        {/form_field}
+
+        {if $form_error && $form_error_message}
+        <div class="alert alert-danger">{$form_error_message}</div>
+        {/if}
+
+        {form_field field='url'}
+        <div class="form-group{if $error} has-error{/if}">
+            <label for="redirect-update-{$label_attr.for}">{$label}</label>
+            <input class="form-control" id="redirect-update-{$label_attr.for}" name="{$name}" type="text" value="{$value}" />
+        </div>
+        {/form_field}
+
+        {form_field field='temp_redirect'}
+        <div class="form-group{if $error} has-error{/if}">
+            <label for="redirect-update-{$label_attr.for}">{$label}</label>
+            <input class="form-control" id="redirect-update-{$label_attr.for}" name="{$name}" type="text" value="{$value}"/>
+        </div>
+        {/form_field}
+
+        {form_field field='redirect'}
+        <div class="form-group{if $error} has-error{/if}">
+            <label for="redirect-update-{$label_attr.for}">{$label}</label>
+            <input class="form-control" id="redirect-update-{$label_attr.for}" name="{$name}" type="text" value="{$value}"/>
+        </div>
+        {/form_field}
+    {/form}
+{/capture}
+
+{include file = "includes/generic-confirm-dialog.html"
+
+         dialog_id       = "update_dialog"
+         dialog_title    = {intl l="Update redirection"}
+
+         form_action     = {url path='/admin/module/TheliaRedirectUrl/update'}
+         form_content    = {$smarty.capture.update_dialog nofilter}
+}
+
+{*<!-- Delete confirmation dialog -->*}
+{capture "delete_dialog"}
+<input type="hidden" name="theliaredirecturl_id" value="" />
+{/capture}
+
+{include file = "includes/generic-confirm-dialog.html"
+
+         dialog_id       = "delete_dialog"
+         dialog_title    = {intl l="Delete redirection"}
+         dialog_message  = {intl l="Do you really want to delete this redirection ?"}
+
+         form_action     = {url path='/admin/module/TheliaRedirectUrl/delete'}
+         form_content    = {$smarty.capture.delete_dialog nofilter}
+}
